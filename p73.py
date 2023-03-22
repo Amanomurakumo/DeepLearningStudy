@@ -31,11 +31,18 @@ def predict(network,x):
 x,t=getdata()
 network=init_network()
 
+batch_size=100
 accuracy_cnt=0
-for i in range(len(x)):
-    y=predict(network,x[i])
-    p=np.argmax(y)#ｙ配列内で、確率が一番大きい値のラベルをpに代入する
-    if p==t[i]:#答えのラベルと比較して、正解していたら+1する
-        accuracy_cnt+=1
+
+# for i in range(len(x)):
+#     y=predict(network,x[i])
+#     p=np.argmax(y)#ｙ配列内で、確率が一番大きい値のラベルをpに代入する
+#     if p==t[i]:#答えのラベルと比較して、正解していたら+1する
+#         accuracy_cnt+=1
+for i in range(0,len(x),batch_size):
+    x_batch=x[i:i+batch_size]
+    y_batch=predict(network,x_batch)
+    p=np.argmax(y_batch,axis=1)#ｙ配列内で、確率が一番大きい値のラベルをpに代入する
+    accuracy_cnt+=np.sum(p==t[i:i+batch_size])
 
 print("Accuracy:"+str(float(accuracy_cnt)/len(x)))       
