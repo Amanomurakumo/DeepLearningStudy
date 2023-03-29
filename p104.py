@@ -29,27 +29,31 @@ from common.functions import sigmoid, softmax
 #     return y
 
 def numerical_gradient(f,x):
-    h=1e-4
-    grad=np.zeros_like(x)
+    h = 1e-4  # 0.0001
+    grad = np.zeros_like(x)
     
+       
     for idx in range(x.size):
-        tmp_val=x[idx]
+        tmp_val = x[idx]
+        x[idx] = float(tmp_val) + h
+        fxh1 = f(x)  # f(x+h)
         
-        x[idx]=tmp_val+h
-        fxh1=f(x)
+        x[idx] = tmp_val - h 
+        fxh2 = f(x)  # f(x-h)
+        grad[idx] = (fxh1 - fxh2) / (2*h)
         
-        x[idx]=tmp_val-h
-        fxh2=f(x)        
-        
-        grad[idx]=(fxh1-fxh2)/(2*h)
-        x[idx]=tmp_val
+        x[idx] = tmp_val  # 値を元に戻す
         
     return grad
 
 def function_1(x):
-    return x**2+0.3*x+3
+    if x.ndim == 1:
+        return np.sum(x**2)
+    else:
+        return np.sum(x**2, axis=1)
 
-numerical_gradient(function_1,np.array([3.0,4.0]))
+input=np.array([3.0,4.0])
+grad=numerical_gradient(function_1,input)
 
     
 # x,t=getdata()
